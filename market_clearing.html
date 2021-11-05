@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <h1>Market clearing with VRES and EES</h1>
+    </head>
+    <body>
+
+        <table id="supply">
+            <tr>
+                <th>Supply</th>
+                <th>Power</th>
+                <th>Cost</th>
+                <th></th>
+            </tr>
+            <tr>
+                <td><input type="text" placeholder="supply name" value="VRES"></td>
+                <td><input type="range" oninput="draw()" placeholder="supply power" value=20 min=0 max=100><output></output></td>
+                <td><input type="range" oninput="draw()" placeholder="supply marginal cost" value=0 min=0 max=100><output></output></td>
+                <td><button onclick="remove_row('supply', this)">Remove</button></td>
+            </tr>
+            <tr>
+                <td><input type="text" placeholder="supply name" value="Import"></td>
+                <td><input type="range" oninput="draw()" placeholder="supply power" value=10 min=0 max=100><output></output></td>
+                <td><input type="range" oninput="draw()" placeholder="supply marginal cost" value=20 min=0 max=100><output></output></td>
+                <td><button onclick="remove_row('supply', this)">Remove</button></td>
+            </tr>
+        </table>
+        <button onclick="add_row('supply')">Add supply</button>
+
+        <table id="demand">
+            <tr>
+                <th>Demand</th>
+                <th>Power</th>
+                <th>Value</th>
+                <th></th>
+            </tr>
+            <tr>
+                <td><input type="text" placeholder="demand name" id="demand_name" value="Demand"></td>
+                <td><input type="range" oninput="draw()" placeholder="demand power" id="demand_power" value=10 min=0 max=100><output></output></td>
+                <td><input type="range" oninput="draw()" placeholder="demand marginal value" id="demand_value" value=100 min=0 max=500><output></output></td>
+                <td><button onclick="remove_row('demand', this)">Remove</button></td>
+            </tr>
+            <tr>
+                <td><input type="text" placeholder="demand name" value="Export"></td>
+                <td><input type="range" oninput="draw()" placeholder="demand power" value=10 min=0 max=100><output></output></td>
+                <td><input type="range" oninput="draw()" placeholder="demand marginal value" value=10 min=0 max=100><output></output></td>
+                <td><button onclick="remove_row('demand', this)">Remove</button></td>
+            </tr>
+        </table>
+        <button onclick="add_row('demand')">Add demand</button>
+
+        <table id="storage">
+            <tr>
+                <th>Storage</th>
+                <th>Charge power</th>
+                <th>Charge efficiency [%]</th>
+                <th>Discharge power</th>
+                <th>Dicharge efficiency [%]</th>
+                <th>Marginal value</th>
+                <th></th>
+            </tr>
+            <tr>
+                <td><input type="text" placeholder="storage name" id="storage_name" value="Battery"></td>
+                <td><input type="range" oninput="draw()" placeholder="charge power" id="charge_power" value=10 min=0 max=100><output></output></td>
+                <td><input type="range" oninput="draw()" placeholder="charge efficiency" id="charge_eff" value=90 min=0 max=100><output></output></td>
+                <td><input type="range" oninput="draw()" placeholder="discharge power" id="discharge_power" value=10 min=0 max=100><output></output></td>
+                <td><input type="range" oninput="draw()" placeholder="discharge efficiency" id="discharge_eff" value=90 min=0 max=100><output></output></td>
+                <td><input type="range" oninput="draw()" placeholder="storage marginal value" id="storage_marginal_value" value=50 min=0 max=100><output></output></td>
+                <td><button onclick="remove_row('storage', this)">Remove</button></td>
+            </tr>
+            <!-- <tr>
+                <td><input type="text" placeholder="storage name" value="Hydrogen"></td>
+                <td><input type="range" oninput="draw()" placeholder="charge power" value=10 min=0 max=100><output></output></td>
+                <td><input type="range" oninput="draw()" placeholder="charge efficiency" value=64 min=0 max=100><output></output></td>
+                <td><input type="range" oninput="draw()" placeholder="discharge power" value=10 min=0 max=100><output></output></td>
+                <td><input type="range" oninput="draw()" placeholder="discharge efficiency" value=50 min=0 max=100><output></output></td>
+                <td><input type="range" oninput="draw()" placeholder="storage marginal value" value=30 min=0 max=500><output></output></td>
+            </tr> -->
+        </table>
+        <button onclick="add_row('storage')">Add storage</button>
+        <br>
+
+        <canvas width="1000" height="600" id="canvas"></canvas>
+        Per Aaslid 2021
+        <script src="market_clearing.js"></script>
+    </body>
+</html>
