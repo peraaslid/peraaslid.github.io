@@ -90,7 +90,7 @@ function yy(y) {
     return window_height - bottom_offset - 5*y;
 }
 
-function add_row(name, row_name, values) {
+function add_row(name, row_name, values, redraw) {
     table = document.getElementById(name);
     var rowCount = table.rows.length;
     var colCount = table.rows[0].cells.length;
@@ -120,7 +120,27 @@ function add_row(name, row_name, values) {
     element.innerHTML = "Remove";
     element.onclick = function() {remove_row(name, element)};
     cell.appendChild(element);
-    draw();
+    if (redraw) {
+        draw();
+    }
+}
+
+function init_table(supplies, demands, storages) {
+    for (let i = 0; i < supplies.length; i++) {
+        add_row("supply", supplies[i].name, [supplies[i].power, supplies[i].value], false);
+    }
+    for (let i = 0; i < demands.length; i++) {
+        add_row("demand", demands[i].name, [demands[i].power, demands[i].value], false);
+    }
+    for (let i = 0; i < storages.length; i++) {
+        add_row("storage", storages[i].name, [
+            storages[i].charge_power,
+            storages[i].charge_efficiency,
+            storages[i].discharge_power,
+            storages[i].discharge_efficiency,
+            storages[i].storage_marginal_value
+        ], false);
+    }
 }
 
 function remove_row(name, button) {
@@ -258,4 +278,5 @@ function compare_objects(a, b) {
     if (a.value < b.value) return -1;
     return 0;
 }
-draw()
+init_table(init_supplies, init_demands, init_storages);
+draw();
