@@ -25,7 +25,7 @@
                 <td><button onclick="remove_row('supply', this)">Remove</button></td>
             </tr>
         </table>
-        <button onclick="add_row('supply')">Add supply</button>
+        <button onclick="add_row('supply', 'NewSuppy',[10,20])">Add supply</button>
 
         <table id="demand">
             <tr>
@@ -47,7 +47,7 @@
                 <td><button onclick="remove_row('demand', this)">Remove</button></td>
             </tr>
         </table>
-        <button onclick="add_row('demand')">Add demand</button>
+        <button onclick="add_row('demand', 'NewDemand', [10,20])">Add demand</button>
 
         <table id="storage">
             <tr>
@@ -77,7 +77,7 @@
                 <td><input type="range" oninput="draw()" placeholder="storage marginal value" value=30 min=0 max=500><output></output></td>
             </tr> -->
         </table>
-        <button onclick="add_row('storage')">Add storage</button>
+        <button onclick="add_row('storage', 'NewStorage', [10,90,10,90,30])">Add storage</button>
         <br>
 
         <canvas width="1000" height="600" id="canvas"></canvas>

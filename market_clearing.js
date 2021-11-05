@@ -90,7 +90,7 @@ function yy(y) {
     return window_height - bottom_offset - 5*y;
 }
 
-function add_row(name) {
+function add_row(name, row_name, values) {
     table = document.getElementById(name);
     var rowCount = table.rows.length;
     var colCount = table.rows[0].cells.length;
@@ -99,20 +99,20 @@ function add_row(name) {
     var cell_name = row.insertCell();
     var element_name = document.createElement("input");
     element_name.type = "text";
-    element_name.value = "New_"+name;
+    element_name.value = row_name;
     cell_name.appendChild(element_name);
     
     for (let j = 1; j < colCount-1; j++) {
         var cell_power = row.insertCell();
         var element_power = document.createElement("input");
         element_power.type = "range";
-        element_power.value = 10;
+        element_power.value = values[j-1];
         element_power.min = 0;
         element_power.max = 100;
         element_power.oninput = draw;
         cell_power.appendChild(element_power);
         var element_power_output = document.createElement("output");
-        element_power_output.value = 10;
+        element_power_output.value = values[j-1];
         cell_power.appendChild(element_power_output);
     }
     var cell = row.insertCell();
