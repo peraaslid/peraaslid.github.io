@@ -16,7 +16,7 @@ let init_supplies = [
 let init_demands = [
     {
         name: "Demand",
-        power: 10,
+        power: 15,
         value: 100
     },
     {
@@ -28,11 +28,19 @@ let init_demands = [
 let init_storages = [
     {
         name: "Battery",
-        charge_power: 10,
+        charge_power: 20,
         charge_efficiency: 90,
-        discharge_power: 10,
+        discharge_power: 20,
         discharge_efficiency: 90,
         storage_marginal_value: 50
+    },
+    {
+        name: "Hydrogen",
+        charge_power: 10,
+        charge_efficiency: 64,
+        discharge_power: 10,
+        discharge_efficiency: 50,
+        storage_marginal_value: 30
     }
 ]
 
@@ -152,7 +160,7 @@ function init_table(supplies, demands, storages) {
 
 function remove_row(name, button) {
     table = document.getElementById(name);
-    table.deleteRow(button.parentNode.parentNode.rowIndex);
+    table.deleteRow(button.parentNode.parentNode.rowIndex-1);
     draw();
 }
 
