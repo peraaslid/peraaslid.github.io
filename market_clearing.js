@@ -1,5 +1,5 @@
 let canv = document.getElementById("canvas")
-const bottom_offset = 50, side_offset = 50, window_height = canv.height, window_width = canv.width;
+const bottom_offset = 50, side_offset = 100, window_height = canv.height, window_width = canv.width;
 
 let init_supplies = [
     {
@@ -78,7 +78,10 @@ function draw()
     supplies = get_supplies();
     draw_curve(ctx, supplies, 'green', 100);
 
-    let price, volume = get_price_and_volume(supplies, demands);
+    let [price, volume] = get_price_and_volume(supplies, demands);
+    draw_price_volume(ctx, price, volume);
+    // console.log(price)
+    // console.log(volume)
 
     storages = get_storages();
     draw_smv(ctx, storages);
@@ -189,6 +192,21 @@ function draw_smv(ctx, storages) {
     ctx.setLineDash([]);
 }
 
+function draw_price_volume(ctx, price, volume) {
+    ctx.beginPath();
+    ctx.font = "12px Arial";
+    ctx.strokeStyle = "black";
+    ctx.setLineDash([10,10]);
+    ctx.moveTo(xx(0), yy(price));
+    ctx.lineTo(xx(volume), yy(price));
+    ctx.fillText("Price: " + price, xx(-8), yy(price))
+    ctx.moveTo(xx(volume), yy(0))
+    ctx.lineTo(xx(volume), yy(price));
+    ctx.fillText("Volume: " + volume, xx(volume), yy(-5))
+    ctx.stroke();
+    ctx.setLineDash([]);
+}
+
 function get_demands()
 {
     var demand_table = document.getElementById("demand");
@@ -264,7 +282,51 @@ function get_price_and_volume(supplies, demands) {
     let volume = 0.0;
     let sid = 0, did = 0;
 
-    // if ()
+    let s_power = supplies[sid].power
+    let s_value = supplies[sid].value
+    let d_power = demands[did].power
+    let d_value = demands[did].value
+    
+    // Start loop
+    while (true) {
+        // if (d_value > s_value) {
+            if (s_power > d_power) {
+                volume += d_power;
+                s_power -= d_power
+                did++;
+                if (did == demands.length) {
+                    // price = supplies[sid].value;
+                    return [s_value, volume];
+                }
+                else {
+                    d_power = demands[did].power;
+                    d_value = demands[did].value;
+                    if (d_value <= s_value) {
+                        return [s_value, volume];
+                    }
+                }
+            }
+            else {
+                volume += s_power;
+                d_power -= s_power
+                sid++;
+                if (sid == supplies.length) {
+                    // price = demands[did].value;
+                    return [d_value, volume];
+                }
+                else {
+                    s_power = supplies[sid].power;
+                    s_value = supplies[sid].value;
+                    if (d_value <= s_value) {
+                        return [d_value, volume];
+                    }
+                }
+            }
+        // }
+        // else {
+
+        // }
+    }
 }
 
 function update_cell_values() {
