@@ -115,17 +115,17 @@ function add_row(name, row_name, values, redraw) {
     element_name.value = row_name;
     cell_name.appendChild(element_name);
     
-    for (let j = 1; j < colCount-1; j++) {
+    for (let j = 0; j < colCount-2; j++) {
         var cell_power = row.insertCell();
         var element_power = document.createElement("input");
         element_power.type = "range";
-        element_power.value = values[j-1];
+        element_power.value = values[j];
         element_power.min = 0;
         element_power.max = 100;
         element_power.oninput = draw;
         cell_power.appendChild(element_power);
         var element_power_output = document.createElement("output");
-        element_power_output.value = values[j-1];
+        element_power_output.value = values[j];
         cell_power.appendChild(element_power_output);
     }
     var cell = row.insertCell();
@@ -297,43 +297,36 @@ function get_price_and_volume(supplies, demands) {
     
     // Start loop
     while (true) {
-        // if (d_value > s_value) {
-            if (s_power > d_power) {
-                volume += d_power;
-                s_power -= d_power
-                did++;
-                if (did == demands.length) {
-                    // price = supplies[sid].value;
-                    return [s_value, volume];
-                }
-                else {
-                    d_power = demands[did].power;
-                    d_value = demands[did].value;
-                    if (d_value <= s_value) {
-                        return [s_value, volume];
-                    }
-                }
+        if (s_power > d_power) {
+            volume += d_power;
+            s_power -= d_power
+            did++;
+            if (did == demands.length) {
+                return [s_value, volume];
             }
             else {
-                volume += s_power;
-                d_power -= s_power
-                sid++;
-                if (sid == supplies.length) {
-                    // price = demands[did].value;
-                    return [d_value, volume];
-                }
-                else {
-                    s_power = supplies[sid].power;
-                    s_value = supplies[sid].value;
-                    if (d_value <= s_value) {
-                        return [d_value, volume];
-                    }
+                d_power = demands[did].power;
+                d_value = demands[did].value;
+                if (d_value <= s_value) {
+                    return [s_value, volume];
                 }
             }
-        // }
-        // else {
-
-        // }
+        }
+        else {
+            volume += s_power;
+            d_power -= s_power
+            sid++;
+            if (sid == supplies.length) {
+                return [d_value, volume];
+            }
+            else {
+                s_power = supplies[sid].power;
+                s_value = supplies[sid].value;
+                if (d_value <= s_value) {
+                    return [d_value, volume];
+                }
+            }
+        }
     }
 }
 
@@ -342,7 +335,7 @@ function update_cell_values() {
     for (let t = 0; t < table_names.length; t++)
     {
         var table = document.getElementById(table_names[t])
-        for (let i = 1; i < table.rows.length; i++)
+        for (let i = 0; i < table.rows.length; i++)
         {
             row = table.rows[i]
             for (let j = 1; j < row.cells.length-1; j++)
