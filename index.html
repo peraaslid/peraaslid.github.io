@@ -1,46 +1,95 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <h1>Market clearing with VRES and EES</h1>
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <!-- Bootstrap CSS -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+        <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     </head>
     <body>
+        <div class="container-fluid p-1 bg-dark text-white text-center">
+            <h1>Market clearing with VRES and EES</h1>
+            <p>
+                Author: Per Aaslid 2021
+                <a href="https://scholar.google.com/citations?user=hCTulYcAAAAJ&hl=no&oi=ao" class="btn btn-light btn-sm" role="button">Google scholar</a>
+                <a href="https://www.researchgate.net/profile/Per-Aaslid" class="btn btn-light btn-sm" role="button">ReserachGate</a>
+            </p>
+        </div>
+        <div class="container">
+            <p>
+                This tool illustrates how energy storage systems (ESS), for example batteries and hydrogen,
+                affect the market clearing in electricity systems. ESSs act as both supply and demand.
+                Marginal value pricing is also applicable for ESSs, but the storage marginal value (SMV) is
+                influenced by the state of the system, for example the SOC of the ESSs, and the future generation
+                and demand. It can therefore be considered as a function of time and state.
+                For a given storage marginal value \( SMV \), and charge and discharge efficiencies \( \eta_c, \eta_d \),
+                the marginal <i>discharge</i> value of an ESS is \( \frac{SMV}{\eta_d} \) and
+                the marginal <i>charge</i> value \( SMV \cdot \eta_c \).
+            </p>
+            <p>
+                In this tool, you can add supplies and demands as well as ESSs. Use the sliders to change power,
+                value and efficiency and observe how the order of the supply and demand changes, and how it influences
+                the market price and volume.
+            </p>
+            <p>For further details, we refer to:</p>
+            <p><a href="https://doi.org/10.1016/j.epsr.2021.107169">Aaslid, P., Korpås, M., Belsnes, M. M., & Fosso, O. B. (2021).
+                Pricing electricity in constrained networks dominated by stochastic renewable generation and electric energy storage.
+                Electric Power Systems Research, 197, 107169.</a></p>
+            <p><a href="https://www.techrxiv.org/articles/preprint/Stochastic_Optimization_of_Microgrid_Operation_With_Renewable_Generation_and_Energy_Storage/16917586">Aaslid, P., Korpås, M., Belsnes, M. M., & Fosso, O. B. (2021). Stochastic Optimization of Microgrid Operation With Renewable Generation and Energy Storage. [Preprint]</a></p>
+        </div>
+        <div class="container">
+            <table class="table table-striped table-sm">
+                <thead>
+                    <tr>
+                        <th>Supply</th>
+                        <th>Power</th>
+                        <th>Cost</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id="supply"></tbody>
+            </table>
+            <button type="button" class="btn btn-primary" onclick="add_row('supply', 'NewSuppy',[10,20], true)">+</button>
+            
 
-        <table id="supply">
-            <tr>
-                <th>Supply</th>
-                <th>Power</th>
-                <th>Cost</th>
-                <th></th>
-            </tr>
-        </table>
-        <button onclick="add_row('supply', 'NewSuppy',[10,20], true)">Add supply</button>
+            <table class="table table-striped table-sm">
+                <thead>
+                    <tr>
+                        <th>Demand</th>
+                        <th>Power</th>
+                        <th>Value</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id="demand"></tbody>
+            </table>
+            <button type="button" class="btn btn-primary" onclick="add_row('demand', 'NewDemand', [10,20], true)">+</button>
 
-        <table id="demand">
-            <tr>
-                <th>Demand</th>
-                <th>Power</th>
-                <th>Value</th>
-                <th></th>
-            </tr>
-        </table>
-        <button onclick="add_row('demand', 'NewDemand', [10,20], true)">Add demand</button>
-
-        <table id="storage">
-            <tr>
-                <th>Storage</th>
-                <th>Charge power</th>
-                <th>Charge efficiency [%]</th>
-                <th>Discharge power</th>
-                <th>Dicharge efficiency [%]</th>
-                <th>Marginal value</th>
-                <th></th>
-            </tr>
-        </table>
-        <button onclick="add_row('storage', 'NewStorage', [10,90,10,90,30], true)">Add storage</button>
-        <br>
-
-        <canvas width="1000" height="600" id="canvas"></canvas>
-        Per Aaslid 2021
+            <table class="table table-striped table-sm">
+                <thead>
+                    <tr>
+                        <th>Storage</th>
+                        <th>Charge power</th>
+                        <th>Charge efficiency [%]</th>
+                        <th>Discharge power</th>
+                        <th>Dicharge efficiency [%]</th>
+                        <th>Marginal value</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id="storage"></tbody>
+            </table>
+            <button type="button" class="btn btn-primary" onclick="add_row('storage', 'NewStorage', [10,90,10,90,30], true)">+</button>
+        </div>
+        <div class="container">
+            <canvas width="1000" height="600" id="canvas"></canvas>
+        </div>
         <script src="market_clearing.js"></script>
     </body>
 </html>

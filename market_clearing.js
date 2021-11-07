@@ -75,12 +75,14 @@ function draw()
     demands = get_demands();
     draw_curve(ctx, demands, 'red', 0);
 
-    supplies = get_supplies()
+    supplies = get_supplies();
     draw_curve(ctx, supplies, 'green', 100);
+
+    let price, volume = get_price_and_volume(supplies, demands);
 
     storages = get_storages();
     draw_smv(ctx, storages);
-    update_cell_values()
+    update_cell_values();
 }
 
 function xx(x) {
@@ -93,7 +95,7 @@ function yy(y) {
 function add_row(name, row_name, values, redraw) {
     table = document.getElementById(name);
     var rowCount = table.rows.length;
-    var colCount = table.rows[0].cells.length;
+    var colCount = values.length + 2;
     var row = table.insertRow(rowCount);
 
     var cell_name = row.insertCell();
@@ -117,7 +119,9 @@ function add_row(name, row_name, values, redraw) {
     }
     var cell = row.insertCell();
     var element = document.createElement("button");
-    element.innerHTML = "Remove";
+
+    element.className = "btn btn-primary";
+    element.innerHTML = "x";
     element.onclick = function() {remove_row(name, element)};
     cell.appendChild(element);
     if (redraw) {
@@ -189,7 +193,7 @@ function get_demands()
 {
     var demand_table = document.getElementById("demand");
     var demands = [];
-    for (let i = 1; i < demand_table.rows.length; i++) {
+    for (let i = 0; i < demand_table.rows.length; i++) {
         row = demand_table.rows[i];
         demands.push({
             name: row.cells[0].children[0].value,
@@ -198,7 +202,7 @@ function get_demands()
         })
     }
     var storage_table = document.getElementById("storage");
-    for (let i = 1; i < storage_table.rows.length; i++) {
+    for (let i = 0; i < storage_table.rows.length; i++) {
         row = storage_table.rows[i];
         demands.push({
             name: row.cells[0].children[0].value,
@@ -216,7 +220,7 @@ function get_supplies()
     var supply_table = document.getElementById("supply");
     var supplies = [];
     
-    for (let i = 1; i < supply_table.rows.length; i++) {
+    for (let i = 0; i < supply_table.rows.length; i++) {
         row = supply_table.rows[i];
         supplies.push({
             name: row.cells[0].children[0].value,
@@ -225,7 +229,7 @@ function get_supplies()
         })
     }
     var storage_table = document.getElementById("storage");
-    for (let i = 1; i < storage_table.rows.length; i++) {
+    for (let i = 0; i < storage_table.rows.length; i++) {
         row = storage_table.rows[i];
         supplies.push({
             name: row.cells[0].children[0].value,
@@ -241,7 +245,7 @@ function get_supplies()
 function get_storages() {
     var storages = []
     var storage_table = document.getElementById("storage");
-    for (let i = 1; i < storage_table.rows.length; i++) {
+    for (let i = 0; i < storage_table.rows.length; i++) {
         row = storage_table.rows[i];
         storages.push({
             name: row.cells[0].children[0].value,
@@ -254,6 +258,13 @@ function get_storages() {
     }
 
     return storages;
+}
+
+function get_price_and_volume(supplies, demands) {
+    let volume = 0.0;
+    let sid = 0, did = 0;
+
+    // if ()
 }
 
 function update_cell_values() {
