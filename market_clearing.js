@@ -131,7 +131,7 @@ function add_row(name, row_name, values, redraw) {
     var cell = row.insertCell();
     var element = document.createElement("button");
 
-    element.className = "btn btn-primary";
+    element.className = "btn btn-primary btn-sm";
     element.innerHTML = "x";
     element.onclick = function() {remove_row(name, element)};
     cell.appendChild(element);
