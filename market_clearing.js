@@ -103,6 +103,13 @@ function yy(y) {
     return window_height - bottom_offset - 5*y;
 }
 
+function update_slider(obj) {
+    rangeSlider = obj.parentNode.children[0]
+    rangeSlider.value = obj.value
+    draw()
+}
+
+
 function add_row(name, row_name, values, redraw) {
     table = document.getElementById(name);
     var rowCount = table.rows.length;
@@ -116,17 +123,21 @@ function add_row(name, row_name, values, redraw) {
     cell_name.appendChild(element_name);
     
     for (let j = 0; j < colCount-2; j++) {
-        var cell_power = row.insertCell();
-        var element_power = document.createElement("input");
+        let cell_power = row.insertCell();
+        let element_power = document.createElement("input");
         element_power.type = "range";
         element_power.value = values[j];
         element_power.min = 0;
         element_power.max = 100;
         element_power.oninput = draw;
         cell_power.appendChild(element_power);
-        var element_power_output = document.createElement("output");
+        let element_power_output = document.createElement("input");
+        element_power_output.type = "number";
+        element_power_output.className = "form-group col-lg-3";
         element_power_output.value = values[j];
         cell_power.appendChild(element_power_output);
+
+        element_power_output.oninput = function() {update_slider(element_power_output)};
     }
     var cell = row.insertCell();
     var element = document.createElement("button");
