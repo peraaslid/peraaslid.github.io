@@ -81,18 +81,16 @@ function draw()
     ctx.stroke();
 
     demands = get_demands();
-    draw_curve(ctx, demands, 'red', 0);
-
     supplies = get_supplies();
-    draw_curve(ctx, supplies, 'green', 100);
-
-    let [price, volume] = get_price_and_volume(supplies, demands);
-    draw_price_volume(ctx, price, volume);
-    // console.log(price)
-    // console.log(volume)
-
     storages = get_storages();
+    let [price, volume] = get_price_and_volume(supplies, demands);
+    
+    draw_surplus(ctx, supplies, demands, price, volume);
+    draw_curve(ctx, demands, 'red', 0);
+    draw_curve(ctx, supplies, 'green', 100);
+    draw_price_volume(ctx, price, volume);
     draw_smv(ctx, storages);
+
     update_cell_values();
 }
 
@@ -108,7 +106,6 @@ function update_slider(obj) {
     rangeSlider.value = obj.value
     draw()
 }
-
 
 function add_row(name, row_name, values, redraw) {
     table = document.getElementById(name);
@@ -224,6 +221,50 @@ function draw_price_volume(ctx, price, volume) {
     ctx.fillText("Volume: " + volume, xx(volume), yy(-5))
     ctx.stroke();
     ctx.setLineDash([]);
+}
+
+function draw_surplus(ctx, supplies, demands, price, volume) {
+    // Supplier surplus
+    ctx.beginPath();
+    ctx.fillStyle = "green";
+    ctx.globalAlpha = 0.2;
+    
+    let acc_volume = 0.0;
+    for (let i = 0; i < supplies.length; i++) {
+        if (supplies[i].value < price) {
+            
+            ctx.fillRect(xx(acc_volume), yy(price), 10*supplies[i].power, 5*(price - supplies[i].value));
+            acc_volume += supplies[i].power;
+        }
+        else {
+            break;
+        }
+    }
+
+    ctx.stroke();
+
+    // Consumer surplus
+    ctx.beginPath();
+    ctx.fillStyle = "red";
+    ctx.globalAlpha = 0.2;
+
+    acc_volume = 0.0;
+    for (let i = 0; i < demands.length; i++) {
+        if (demands[i].value > price) {
+            
+            ctx.fillRect(xx(acc_volume), yy(demands[i].value), 10*demands[i].power, 5*(demands[i].value - price));
+            acc_volume += demands[i].power;
+        }
+        else {
+            break;
+        }
+    }
+
+    ctx.stroke();
+
+
+    ctx.fillStyle = "black";
+    ctx.globalAlpha = 1.0;
 }
 
 function get_demands()
