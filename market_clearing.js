@@ -424,4 +424,5 @@ function compare_objects(a, b) {
     return 0;
 }
 init_table(init_supplies, init_demands, init_storages);
+window.onresize = draw;
 draw();
