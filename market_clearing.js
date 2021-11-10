@@ -1,5 +1,7 @@
 let canv = document.getElementById("canvas")
-const bottom_offset = 50, side_offset = 100, window_height = canv.height, window_width = canv.width;
+const bottom_offset = 50, top_offset = 50, left_offset = 100, right_offset = 50;
+var window_height = canv.height, window_width = canv.width;
+var xScale = 10, yScale = 5;
 
 let init_supplies = [
     {
@@ -51,38 +53,55 @@ function draw()
         return;
     }
     const ctx = canvas.getContext('2d');
+    window_width = 0.8 * window.innerWidth
+    window_height = 0.6 * window_width;
+    ctx.canvas.width = window_width;
+    ctx.canvas.height = window_height;
     ctx.clearRect(0, 0, window_width, window_height)
 
     ctx.strokeStyle = 'black';
     ctx.lineWidth = 2;
     
+    demands = get_demands();
+    supplies = get_supplies();
+    storages = get_storages();
+    let sumSupply = 0.0;
+    let sumDemand = 0.0;
+    for (let i = 0; i < supplies.length; i++) {
+        sumSupply += supplies[i].power;
+    }
+    for (let i = 0; i < demands.length; i++) {
+        sumDemand += demands[i].power;
+    }
+    let maxPower = Math.max(sumSupply, sumDemand);
+    let maxValue = Math.max(demands[0].value, supplies.at(-1).value);
+    xScale = (window_width - left_offset - right_offset) / maxPower;
+    yScale = (window_height - bottom_offset - top_offset) / maxValue;
+
     // Draw axis
     ctx.beginPath();
     ctx.moveTo(xx(0),yy(0));
-    ctx.lineTo(xx(0), yy(500));
+    ctx.lineTo(xx(0), yy(maxValue));
     ctx.moveTo(xx(0), yy(0));
-    ctx.lineTo(xx(500), yy(0));
+    ctx.lineTo(xx(maxPower), yy(0));
     ctx.stroke();
-
+    
     // Draw grid
     ctx.beginPath();
     ctx.strokeStyle = "lightgrey";
     ctx.lineWidth = 0.5;
     for (let i = 1; i <= 10; i++) {
         ctx.moveTo(xx(0), yy(10*i));
-        ctx.lineTo(xx(100), yy(10*i));
-        ctx.fillText(i*10, xx(-2), yy(10*i));
+        ctx.lineTo(xx(maxPower), yy(10*i));
+        ctx.fillText(i*10, 0.8*left_offset, yy(10*i));
     }
     for (let i = 1; i <= 10; i++) {
         ctx.moveTo(xx(i*10), yy(0));
         ctx.lineTo(xx(i*10), yy(100));
-        ctx.fillText(i*10, xx(i*10), yy(-2));
+        ctx.fillText(i*10, xx(i*10), yy(0) + 0.2*bottom_offset);
     }
     ctx.stroke();
 
-    demands = get_demands();
-    supplies = get_supplies();
-    storages = get_storages();
     let [price, volume] = get_price_and_volume(supplies, demands);
     
     draw_surplus(ctx, supplies, demands, price, volume);
@@ -95,10 +114,10 @@ function draw()
 }
 
 function xx(x) {
-    return 10*x+side_offset;
+    return xScale*x+left_offset;
 }
 function yy(y) {
-    return window_height - bottom_offset - 5*y;
+    return window_height - bottom_offset - yScale*y;
 }
 
 function update_slider(obj) {
@@ -201,7 +220,7 @@ function draw_smv(ctx, storages) {
     ctx.setLineDash([10,10]);
     for (let i = 0; i < storages.length; i++) {
         ctx.moveTo(xx(0), yy(storages[i].storage_marginal_value));
-        ctx.lineTo(xx(window_width), yy(storages[i].storage_marginal_value));
+        ctx.lineTo(window_width - right_offset, yy(storages[i].storage_marginal_value));
         ctx.fillText(storages[i].name + " SMV", xx(0), yy(storages[i].storage_marginal_value))
     }
     ctx.stroke();
@@ -215,10 +234,10 @@ function draw_price_volume(ctx, price, volume) {
     ctx.setLineDash([10,10]);
     ctx.moveTo(xx(0), yy(price));
     ctx.lineTo(xx(volume), yy(price));
-    ctx.fillText("Price: " + price, xx(-8), yy(price))
+    ctx.fillText("Price: " + price, left_offset*0.2, yy(price))
     ctx.moveTo(xx(volume), yy(0))
     ctx.lineTo(xx(volume), yy(price));
-    ctx.fillText("Volume: " + volume, xx(volume), yy(-5))
+    ctx.fillText("Volume: " + volume, xx(volume), yy(0) + 0.6 * bottom_offset)
     ctx.stroke();
     ctx.setLineDash([]);
 }
@@ -233,7 +252,7 @@ function draw_surplus(ctx, supplies, demands, price, volume) {
     for (let i = 0; i < supplies.length; i++) {
         if (supplies[i].value < price) {
             
-            ctx.fillRect(xx(acc_volume), yy(price), 10*supplies[i].power, 5*(price - supplies[i].value));
+            ctx.fillRect(xx(acc_volume), yy(price), xScale*supplies[i].power, yScale*(price - supplies[i].value));
             acc_volume += supplies[i].power;
         }
         else {
@@ -252,7 +271,7 @@ function draw_surplus(ctx, supplies, demands, price, volume) {
     for (let i = 0; i < demands.length; i++) {
         if (demands[i].value > price) {
             
-            ctx.fillRect(xx(acc_volume), yy(demands[i].value), 10*demands[i].power, 5*(demands[i].value - price));
+            ctx.fillRect(xx(acc_volume), yy(demands[i].value), xScale*demands[i].power, yScale*(demands[i].value - price));
             acc_volume += demands[i].power;
         }
         else {
