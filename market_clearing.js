@@ -53,7 +53,7 @@ function draw()
         return;
     }
     const ctx = canvas.getContext('2d');
-    window_width = 0.8 * window.innerWidth
+    window_width = document.getElementById("canvas_container").offsetWidth
     window_height = 0.6 * window_width;
     ctx.canvas.width = window_width;
     ctx.canvas.height = window_height;
